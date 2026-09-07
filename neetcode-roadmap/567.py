@@ -1,34 +1,28 @@
 class Solution:
     def checkInclusion(self, s1: str, s2: str) -> bool:
-        from collections import defaultdict
-        dict_cnt_s1 = defaultdict(int)
-        for ch in s1:
-            dict_cnt_s1[ch] += 1
+        n1, n2 = len(s1), len(s2)
+        # If s1 is longer -> impossible, return False
+        if n1 > n2:
+            return False
 
-        cur_cnt = 0
-        start, end = 0, 0
-        dict_cnt_s2 = defaultdict(int)
-        while end < len(s2):
-            # current char not in s1
-            if s2[end] not in dict_cnt_s1:
-                end += 1
-                start = end
-                dict_cnt_s2.clear()
-                continue
+        # list of char counts for s1, s2
+        s1_counts = [0] * 26
+        s2_counts = [0] * 26
 
-            # increase current s2 count
-            dict_cnt_s2[s2[end]] += 1
+        for i in range(n1):
+            s1_counts[ord(s1[i]) - ord('a')] += 1
+            s2_counts[ord(s2[i]) - ord('a')] += 1
 
-            # if current char count is more than s1
-            # slide start while previous char (same as curr) shows
-            while dict_cnt_s1[s2[end]] < dict_cnt_s2[s2[end]]:
-                dict_cnt_s2[s2[start]] -= 1
-                start += 1
+        if s1_counts == s2_counts:
+            return True
 
-            if end - start + 1 == len(s1):
+        # Slide size fixed window across s2
+        for end in range(n1, n2):
+            s2_counts[ord(s2[end]) - ord('a')] += 1
+            s2_counts[ord(s2[end - n1]) - ord('a')] -= 1
+
+            if s1_counts == s2_counts:
                 return True
-        
-            end += 1
 
         return False
 

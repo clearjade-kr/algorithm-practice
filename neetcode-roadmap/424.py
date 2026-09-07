@@ -11,15 +11,17 @@ class Solution:
         dict_cnt = defaultdict(int)
         max_freq = 0
         ret_val = 0
+
         while end < len(s):
             dict_cnt[s[end]] += 1
             max_freq = max(max_freq, dict_cnt[s[end]])
 
-            while (end - start + 1) - max_freq > k:
+            # We only need to check the max_freq change
+            # since we need is the longest substring
+            if (end - start + 1) - max_freq > k:
                 dict_cnt[s[start]] -= 1
                 start += 1
-                max_freq = max(dict_cnt.values())
-
+            
             ret_val = max(ret_val, end - start + 1)
             end += 1
 
