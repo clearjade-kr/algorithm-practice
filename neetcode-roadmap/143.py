@@ -10,27 +10,32 @@ class ListNode:
 
 class Solution:
     def reorderList(self, head: Optional[ListNode]) -> None:
-        """
-        Do not return anything, modify head in-place instead.
-        """
-        # Save in list and calculate next node index
-        
-        node_list = []
-        next_node = head
-        while next_node:
-            node_list.append(next_node)
-            next_node = next_node.next
+        if not head or not head.next:
+            return
 
-        N = len(node_list)
-        for i in range(N // 2):
-            node_list[i].next = node_list[N - 1 - i]
-            node_list[N - 1 - i].next = node_list[i + 1]
-        node_list[N // 2].next = None
-        
-        # target_node = head
-        # while target_node:
-        #     print(target_node.val)
-        #     target_node = target_node.next
+        # Finding middle node with two pointer
+        slow, fast = head, head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+
+        # Cutting list into half and reversing second half
+        prev, curr = None, slow.next
+        slow.next = None
+        while curr:
+            nxt = curr.next
+            curr.next = prev
+            prev = curr
+            curr = nxt
+
+        # Merging two halves of list
+        first, second = head, prev
+        while second:
+            tmp1, tmp2 = first.next, second.next
+            first.next = second
+            second.next = tmp1
+            first = tmp1
+            second = tmp2
 
         
 if __name__ == "__main__":

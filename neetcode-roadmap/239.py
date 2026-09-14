@@ -3,24 +3,24 @@ from typing import List
 
 class Solution:
     def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
-        queue_idx = []
-        for i in range(k):
+        from collections import deque
+        queue_idx = deque()
+        ret_list = []
+
+        for i in range(len(nums)):
+            # Remove first element of queue if the index is out of window
+            if queue_idx and queue_idx[0] <= i - k:
+                queue_idx.popleft()
+
+            # Remove last elements that are smaller than current
             while queue_idx and nums[queue_idx[-1]] < nums[i]:
-                queue_idx.pop(-1)
+                queue_idx.pop()
 
             queue_idx.append(i)
 
-        ret_list = [nums[queue_idx[0]]]
-        for i in range(k, len(nums)):
-            start = i - k
-            if queue_idx[0] == start:
-                queue_idx.pop(0)
-
-            while queue_idx and nums[queue_idx[-1]] < nums[i]:
-                queue_idx.pop(-1)
-
-            queue_idx.append(i)
-            ret_list.append(nums[queue_idx[0]])
+            # Add first element if current index is after initial k - 1
+            if i >= k - 1:
+                ret_list.append(nums[queue_idx[0]])
 
         return ret_list
 

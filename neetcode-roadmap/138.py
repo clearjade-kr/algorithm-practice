@@ -21,17 +21,28 @@ class Solution:
         if not head:
             return None
 
-        map_nodes = {}
-
+        # Add new nodes right after each existing nodes
         curr = head
         while curr:
-            map_nodes[curr] = Node(curr.val)
-            curr = curr.next
+            new_node = Node(curr.val, curr.next)
+            curr.next = new_node
+            curr = new_node.next
 
+        # Assign created nodes random
         curr = head
         while curr:
-            map_nodes[curr].next = map_nodes.get(curr.next)
-            map_nodes[curr].random = map_nodes.get(curr.random)
+            if curr.random:
+                curr.next.random = curr.random.next
+            curr = curr.next.next
+
+        # Extract new created nodes into new list
+        curr = head
+        new_head = head.next
+        while curr:
+            clone = curr.next
+            curr.next = clone.next
+            if clone.next:
+                clone.next = clone.next.next
             curr = curr.next
 
-        return map_nodes[head]
+        return new_head
